@@ -31,6 +31,9 @@
      #:with set-val-fn
      (format-id #'name "set-state-~a-val!" #'name)
 
+     #:with get-val-fn
+     (format-id #'name "state-~a-val" #'name)
+     
      #:with set-lifecycle-fn
      (format-id #'name "set-state-~a-lifecycle!" #'name)
 
@@ -63,15 +66,21 @@
              (raise-user-error (format "already stopped: ~a" 'name))))
 
      #:with register
-     #'(when main-state
-         (set-affix-components! main-state (append (affix-components main-state) '(name))))
+     #'(when reg
+         (set-registry-components! reg (append (registry-components reg) '(name))))
 
      #'(begin
          (struct struct-name ([val #:auto #:mutable]
                               [lifecycle #:auto #:mutable])
+
            #:methods gen:state
            [fn-start
-            fn-stop])
+            fn-stop]
+
+           #:property prop:procedure
+           (lambda (self)
+             (get-val-fn self)))
+
          (define name (struct-name))
          register)]))
 
@@ -104,11 +113,17 @@
 
   ;; @TODO: too brittle, should reset the global state before running the test
   (test-case "registers component"
-    (check-eq? 4 (length (affix-components main-state))))
+    (check-eq? 4 (length (registry-components reg))))
   
   (test-case "calling start shoud set the encapsulate value"
     (defstate my-test-5
       #:start (lambda (state args) 'foo))
     
     (start my-test-5 #f)
-    (check-eq? (state-my-test-5-val my-test-5) 'foo)))
+    (check-eq? (state-my-test-5-val my-test-5) 'foo))
+
+  (test-case "the resulting state can be called as a function and it returns the encapsulated value"
+    (defstate my-test-6
+      #:start (lambda (state args) 'bar))
+    (start my-test-6 #f)
+    (check-eq? (my-test-6) 'bar)))

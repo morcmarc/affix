@@ -1,11 +1,11 @@
 #lang racket/base
 
-(provide affix
-         affix-components
-         set-affix-components!
-         main-state)
+(provide 
+         registry-components
+         set-registry-components!
+         reg)
 
-(struct affix ([components #:mutable #:auto])
+(struct registry ([components #:mutable #:auto])
   #:auto-value '())
 
-(define main-state (affix))
+(define reg (registry))
