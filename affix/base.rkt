@@ -1,7 +1,6 @@
 #lang racket/base
 
-(provide 
-         registry-components
+(provide registry-components
          set-registry-components!
          reg)
 

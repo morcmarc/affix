@@ -67,7 +67,7 @@
 
      #:with register
      #'(when reg
-         (set-registry-components! reg (append (registry-components reg) '(name))))
+         (set-registry-components! reg (append (registry-components reg) (list name))))
 
      #'(begin
          (struct struct-name ([val #:auto #:mutable]
