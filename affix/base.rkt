@@ -1,6 +1,11 @@
 #lang racket/base
 
-(require "state.rkt")
+(provide affix
+         affix-components
+         set-affix-components!
+         main-state)
 
-(provide (all-from-out "state.rkt"))
+(struct affix ([components #:mutable #:auto])
+  #:auto-value '())
 
+(define main-state (affix))

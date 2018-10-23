@@ -5,3 +5,5 @@
 (define author '("Marcell Jusztin <hello@morcmarc.com"))
 (define deps '("base"
                ["racket" "6.0"]))
+(define build-deps '("rackunit-lib"
+                     "scribble-lib"))
