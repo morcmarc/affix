@@ -44,7 +44,7 @@
      #'(define (start state args)
          (if (not (eq? (get-lifecycle-fn state) 'started))
              (if start-fn*
-                 (let ([val (start-fn* state args)])
+                 (let ([val (delay/sync (start-fn* state args))])
                    (set-val-fn state val)
                    (set-lifecycle-fn state 'started)
                    val)
@@ -79,26 +79,16 @@
 
            #:property prop:procedure
            (lambda (self)
-             (get-val-fn self)))
+             (let ([val (get-val-fn self)])
+               (if (promise? val)
+                   (force val)
+                   val))))
 
          (define name (struct-name))
          register)]))
 
 (module+ test
   (require rackunit)
-
-  (test-case "start-stop methods"
-    (defstate my-test
-      #:start (lambda (state args) "custom starting")
-      #:stop (lambda (state) "custom stopping"))
-    
-    (defstate my-test-2)
-    
-    (check-eq? "custom stopping" (stop my-test))
-    (check-eq? "custom starting" (start my-test #f))
-
-    (check-eq? #t (stop my-test-2))
-    (check-eq? #t (start my-test-2 #f)))
 
   (test-case "cannot be started twice"
     (defstate my-test-3)
@@ -112,15 +102,17 @@
     (check-exn exn:fail:user? (stop my-test-4)))
 
   ;; @TODO: too brittle, should reset the global state before running the test
-  (test-case "registers component"
-    (check-eq? 4 (length (registry-components reg))))
+  (test-case "registers components"
+    (check-eq? 2 (length (registry-components reg))))
   
-  (test-case "calling start shoud set the encapsulate value"
+  (test-case "calling start shoud set the encapsulated value"
     (defstate my-test-5
       #:start (lambda (state args) 'foo))
     
     (start my-test-5 #f)
-    (check-eq? (state-my-test-5-val my-test-5) 'foo))
+    (let ([val (state-my-test-5-val my-test-5)])
+      (check-true (promise? val))
+      (check-eq? (force val) 'foo)))
 
   (test-case "the resulting state can be called as a function and it returns the encapsulated value"
     (defstate my-test-6

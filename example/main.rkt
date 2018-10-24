@@ -5,4 +5,5 @@
          "bar.rkt")
 
 (module* main #f
-  (start-all #f))
+  (begin (start-all #f)
+         (displayln (bar))))

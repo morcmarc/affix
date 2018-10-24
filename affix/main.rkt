@@ -1,13 +1,22 @@
 #lang racket
 
-(require "state.rkt"
+(require racket/contract
+         "state.rkt"
          "base.rkt")
 
 (provide (all-from-out "state.rkt")
-         (all-defined-out))
+         (contract-out
+          [start-all (-> (or/c list? false?) any)]
+          [stop-all (-> any)]))
 
 (define (start-all args)
   (for-each
    (λ (component)
-     (start pcomponent args))
-     (registry-components reg)))
+     (start component args))
+   (registry-components reg)))
+
+(define (stop-all)
+  (for-each
+   (λ (component)
+     (stop component))
+   (registry-components reg)))
