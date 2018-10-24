@@ -5,9 +5,8 @@
          "base.rkt")
 
 (provide (all-from-out "state.rkt")
-         (contract-out
-          [start-all (-> (or/c list? false?) any)]
-          [stop-all (-> any)]))
+         start-all
+         stop-all)
 
 (define (start-all args)
   (for-each

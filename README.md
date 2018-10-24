@@ -15,7 +15,7 @@ The following will create a new locally bound *state*:
 
 #lang racket
 
-(require affix/affix)
+(require affix)
 
 (defstate db-connection
   #:start (lambda (state args)
@@ -42,7 +42,7 @@ Defining a *state* does not start it. It will be added to an internal registry t
 #lang racket
 
 (require "db-connection.rkt"
-         affix/affix)
+         affix)
 
 (module+ main #f
   (start-all (current-command-line-arguments)))
