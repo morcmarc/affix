@@ -1,10 +1,10 @@
 #lang racket/base
 
-(provide registry-components
-         set-registry-components!
+(provide registry-states
+         set-registry-states!
          reg)
 
-(struct registry ([components #:mutable #:auto])
-  #:auto-value '())
+(struct registry ([states #:mutable #:auto])
+  #:auto-value (list))
 
 (define reg (registry))

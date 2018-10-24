@@ -1,4 +1,5 @@
 PACKAGE-NAME=affix
+EXCL=example
 DEPS-FLAGS=--check-pkg-deps --unused-pkg-deps
 
 all: setup

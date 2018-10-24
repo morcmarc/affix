@@ -1,9 +1,9 @@
 #lang racket
 
-(require "../affix/main.rkt"
-         "foo.rkt"
-         "bar.rkt")
+(require affix
+         "config.rkt"
+         "server.rkt")
 
 (module* main #f
-  (begin (start-all #f)
-         (displayln (bar))))
+  (begin (start-all #hash(("config-file" . "config.yml")))
+         (server)))

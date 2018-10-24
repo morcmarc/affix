@@ -5,17 +5,25 @@
          "base.rkt")
 
 (provide (all-from-out "state.rkt")
-         start-all
-         stop-all)
+         (all-defined-out))
+
+(module+ test
+  (require rackunit))
 
 (define (start-all args)
-  (for-each
-   (λ (component)
-     (start component args))
-   (registry-components reg)))
+  (start (registry-states reg) args))
 
 (define (stop-all)
+  (stop (registry-states reg)))
+
+(define (start states args)
   (for-each
-   (λ (component)
-     (stop component))
-   (registry-components reg)))
+   (λ (s)
+     (start-state s args))
+   states))
+
+(define (stop states)
+  (for-each
+   (λ (s)
+     (stop-state s))
+   states))
